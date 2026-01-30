@@ -34,6 +34,12 @@ const Search: React.FC = () => {
     e.preventDefault();
     if (!preOrderName.trim()) return;
 
+    // Проверяем, что user существует
+    if (!user) {
+      alert('Please sign in to submit a pre-order request.');
+      return;
+    }
+
     // Construct message: "Pre-order: [Name], Photo: [Link], User: [Username]"
     const message = `🛍 *NEW PRE-ORDER REQUEST* %0A%0A📦 *Item:* ${preOrderName} %0A📸 *Photo:* ${preOrderPhoto || 'No photo provided'} %0A👤 *User:* @${user.username}`;
     
@@ -111,46 +117,53 @@ const Search: React.FC = () => {
       {/* Results */}
       {query.length > 0 && filteredProducts.length === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center animate-fade-in">
-          <div className="bg-neutral-900 p-6 rounded-2xl border border-neutral-800 w-full shadow-sm">
-            <div className="flex items-center space-x-3 mb-4 text-red-600">
-                <PackageSearch size={24} />
-                <h2 className="text-lg font-bold text-white">Request Item</h2>
+          {!user ? (
+            <div className="bg-neutral-900 p-6 rounded-2xl border border-neutral-800 w-full shadow-sm text-center">
+              <PackageSearch size={32} className="mb-3 mx-auto text-neutral-600" />
+              <p className="text-neutral-400">Please sign in to request items.</p>
             </div>
-            <p className="text-neutral-400 text-sm mb-6">
-              Couldn't find what you're looking for? Submit a pre-order request directly to our admin.
-            </p>
-            
-            <form onSubmit={handlePreOrderSubmit} className="space-y-4">
-              <div>
-                <label className="block text-xs font-medium text-neutral-400 mb-1">Item Name</label>
-                <input
-                  type="text"
-                  required
-                  value={preOrderName}
-                  onChange={(e) => setPreOrderName(e.target.value)}
-                  className="w-full bg-black border border-neutral-800 rounded-lg p-3 text-sm text-white focus:ring-1 focus:ring-red-600 outline-none"
-                  placeholder="e.g. Jordan 1 Retro High"
-                />
+          ) : (
+            <div className="bg-neutral-900 p-6 rounded-2xl border border-neutral-800 w-full shadow-sm">
+              <div className="flex items-center space-x-3 mb-4 text-red-600">
+                  <PackageSearch size={24} />
+                  <h2 className="text-lg font-bold text-white">Request Item</h2>
               </div>
-              <div>
-                <label className="block text-xs font-medium text-neutral-400 mb-1">Photo URL (Optional)</label>
-                <input
-                  type="url"
-                  value={preOrderPhoto}
-                  onChange={(e) => setPreOrderPhoto(e.target.value)}
-                  className="w-full bg-black border border-neutral-800 rounded-lg p-3 text-sm text-white focus:ring-1 focus:ring-red-600 outline-none"
-                  placeholder="https://..."
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-white hover:bg-neutral-200 text-black font-bold py-3 rounded-xl flex items-center justify-center space-x-2 transition-all"
-              >
-                <span>Send Request to Admin</span>
-                <Send size={16} />
-              </button>
-            </form>
-          </div>
+              <p className="text-neutral-400 text-sm mb-6">
+                Couldn't find what you're looking for? Submit a pre-order request directly to our admin.
+              </p>
+              
+              <form onSubmit={handlePreOrderSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-medium text-neutral-400 mb-1">Item Name</label>
+                  <input
+                    type="text"
+                    required
+                    value={preOrderName}
+                    onChange={(e) => setPreOrderName(e.target.value)}
+                    className="w-full bg-black border border-neutral-800 rounded-lg p-3 text-sm text-white focus:ring-1 focus:ring-red-600 outline-none"
+                    placeholder="e.g. Jordan 1 Retro High"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-neutral-400 mb-1">Photo URL (Optional)</label>
+                  <input
+                    type="url"
+                    value={preOrderPhoto}
+                    onChange={(e) => setPreOrderPhoto(e.target.value)}
+                    className="w-full bg-black border border-neutral-800 rounded-lg p-3 text-sm text-white focus:ring-1 focus:ring-red-600 outline-none"
+                    placeholder="https://..."
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="w-full bg-white hover:bg-neutral-200 text-black font-bold py-3 rounded-xl flex items-center justify-center space-x-2 transition-all"
+                >
+                  <span>Send Request to Admin</span>
+                  <Send size={16} />
+                </button>
+              </form>
+            </div>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-4 pb-20">
